@@ -7,5 +7,6 @@ public class Driver extends JPanel
 	{
 		JFrame frame = new JFrame ("Santa Fe Ant Problem");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		System.out.println("hello");
 	}
 }
