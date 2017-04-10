@@ -4,14 +4,13 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
 public class Driver extends JPanel
 {
@@ -106,5 +105,25 @@ s	 */
 		grid[pos.x][pos.y] = 2;
 		//TODO add if (numApples == 0) then reset.
 	}
-
+	
+	private void readGrid()
+	{
+		Scanner scan = new Scanner(System.in);
+		String[] input = new String[30];
+		for(int x = 0; x < grid.length; x++)
+		{
+			scan.nextLine().split(" ");
+			for(int y = 0; y < grid[x].length; y++)
+			{
+				grid[x][y] = Integer.parseInt(input[y]);
+			}
+		}
+		scan.close();
+	}
+	
+	private void reset()
+	{
+		readGrid();
+		pos.setLocation(0, 0);
+	}
 }
