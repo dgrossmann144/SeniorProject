@@ -55,7 +55,8 @@ s	 */
 	public void tick()
 	{
 		System.out.println("tick");
-		pos.setLocation(pos.getX(), pos.getY() + 1);
+		
+		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
 	}
 	
 	public void paintComponent(Graphics g)
