@@ -11,6 +11,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+
 public class Driver extends JPanel
 {
 	
@@ -55,7 +57,7 @@ s	 */
 	public void tick()
 	{
 		System.out.println("tick");
-		pos.setLocation(pos.getX(), pos.getY() + 1);
+		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
 	}
 	
 	public void paintComponent(Graphics g)
