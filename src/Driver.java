@@ -55,6 +55,7 @@ s	 */
 	private static void tick()
 	{
 		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
+		System.out.println(grid[0][0]);
 		updateGrid();
 	}
 	
