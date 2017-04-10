@@ -19,7 +19,6 @@ public class Driver extends JPanel
 	private BufferedImage path = null;
 	private BufferedImage fruit = null;
 	private BufferedImage greenPath = null;
-	private BufferedImage greenFruit = null;
 	private BufferedImage yoshi = null;
 	private Point pos = new Point(0, 0);
 	private int numFruitLeft; // number of fruit left on the map
@@ -52,6 +51,7 @@ s	 */
 		this.setPreferredSize(new Dimension(960, 960));
 		setFocusable(true);
 		requestFocus();
+		setApples(10);
 	}
 	
 	private void tick()
@@ -96,11 +96,31 @@ s	 */
 		}
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
 	}
-	
+	/**
+	 * Updates the grid to reflect the movement of the character.
+	 */
 	private void updateGrid()
 	{
 		if (grid[pos.x][pos.y] == 1)
 			numFruitLeft--;
 		grid[pos.x][pos.y] = 2;
+	}
+	
+	/**
+	 * Sets a specific number of apples onto the grid.
+	 * @param num the number of apples to be placed on the grid.
+	 */
+	private void setApples(int num)
+	{
+		int numApples = 0, xpos, ypos;
+		while (numApples < num)
+		{
+			xpos = (int)(Math.random() * 30); ypos = (int)(Math.random() * 30);
+			if (grid[xpos][ypos] != 1)
+			{
+				grid[xpos][ypos] = 1;
+				numApples++;
+			}
+		}
 	}
 }

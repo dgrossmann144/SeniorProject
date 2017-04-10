@@ -23,7 +23,7 @@ public class Individual
 	{
 		if(fitness == 0)
 		{
-			fitness = FitnessCalc.getFitness(this);
+			//fitness = FitnessCalc.getFitness(this);
 		}
 		return fitness;
 	}
