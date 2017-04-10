@@ -54,13 +54,13 @@ s	 */
 		requestFocus();
 	}
 	
-	public void tick()
+	private void tick()
 	{
 		System.out.println("tick");
 		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
 	}
 	
-	public void paintComponent(Graphics g)
+	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
 		try
@@ -98,6 +98,5 @@ s	 */
 			}
 		}
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
-		
 	}
 }
