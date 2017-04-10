@@ -43,7 +43,7 @@ s	 */
 		
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask(){public void run(){panel.tick();panel.repaint();
-		}}, 0, 1000/2);//handles tick and repainting the jframe
+		}}, 0, 1000/2);  //handles tick and repainting the jframe
 	}
 	
 	public Driver()
@@ -51,7 +51,7 @@ s	 */
 		this.setPreferredSize(new Dimension(960, 960));
 		setFocusable(true);
 		requestFocus();
-		setApples(10);
+		grid[0][0] = 2; // first tile cannot be an apple and is already traversed/
 	}
 	
 	private void tick()
@@ -104,23 +104,7 @@ s	 */
 		if (grid[pos.x][pos.y] == 1)
 			numFruitLeft--;
 		grid[pos.x][pos.y] = 2;
+		//TODO add if (numApples == 0) then reset.
 	}
-	
-	/**
-	 * Sets a specific number of apples onto the grid.
-	 * @param num the number of apples to be placed on the grid.
-	 */
-	private void setApples(int num)
-	{
-		int numApples = 0, xpos, ypos;
-		while (numApples < num)
-		{
-			xpos = (int)(Math.random() * 30); ypos = (int)(Math.random() * 30);
-			if (grid[xpos][ypos] != 1)
-			{
-				grid[xpos][ypos] = 1;
-				numApples++;
-			}
-		}
-	}
+
 }
