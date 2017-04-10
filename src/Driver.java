@@ -58,6 +58,7 @@ s	 */
 	{
 		System.out.println("tick");
 		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
+		updateGrid();
 	}
 	
 	protected void paintComponent(Graphics g)
@@ -96,8 +97,10 @@ s	 */
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
 	}
 	
-	private void pickUpFruit()
+	private void updateGrid()
 	{
-		
+		if (grid[pos.x][pos.y] == 1)
+			numFruitLeft--;
+		grid[pos.x][pos.y] = 2;
 	}
 }
