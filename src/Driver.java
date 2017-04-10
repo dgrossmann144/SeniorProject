@@ -1,5 +1,6 @@
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,11 +16,15 @@ public class Driver extends JPanel
 	
 	private BufferedImage path = null;
 	private BufferedImage fruit = null;
+	private BufferedImage greenPath = null;
+	private BufferedImage greenFruit = null;
 	private BufferedImage yoshi = null;
+	private Point pos = new Point(0, 0);
 	/**
 	 * 0 = path<br>
 	 * 1 = fruit<br>
-	 * 2 = yoshi<br>
+	 * 2 = completed path<br>
+	 * 3 = completed fruit<br>
 s	 */
 	private int[][] grid = new int[30][30];
 	
@@ -37,7 +42,7 @@ s	 */
 		
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask(){public void run(){panel.tick();panel.repaint();
-		}}, 0, 1000/1);//handles tick and repainting the jframe.
+		}}, 0, 1000/2);//handles tick and repainting the jframe
 	}
 	
 	public Driver()
@@ -49,7 +54,8 @@ s	 */
 	
 	public void tick()
 	{
-		
+		System.out.println("tick");
+		pos.setLocation(pos.getX(), pos.getY() + 1);
 	}
 	
 	public void paintComponent(Graphics g)
@@ -59,6 +65,8 @@ s	 */
 		{
 			path = ImageIO.read(new File("assets/Path.png"));
 			fruit = ImageIO.read(new File("assets/Fruit.png"));
+			greenPath = ImageIO.read(new File("assets/GreenPath.png"));
+			greenFruit = ImageIO.read(new File("assets/GreenFruit.png"));
 			yoshi = ImageIO.read(new File("assets/Yoshi.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -77,13 +85,17 @@ s	 */
 						g.drawImage(fruit, x*32, y*32, 32, 32, null);
 						break;
 					case 2:
-						g.drawImage(yoshi, x*32, y*32, 32, 32, null);
+						g.drawImage(greenPath, x*32, y*32, 32, 32, null);
+						break;
+					case 3:
+						g.drawImage(greenFruit, x*32, y*32, 32, 32, null);
 						break;
 					default:
 						g.drawImage(path, x*32, y*32, 32, 32, null);
 				}
 			}
 		}
+		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
 		
 	}
 }
