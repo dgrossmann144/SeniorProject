@@ -42,7 +42,7 @@ s	 */
 		reset();
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask(){public void run(){panel.tick();panel.repaint();
-		}}, 0, 1000/2);//handles tick and repainting the jframe
+		}}, 0, 1000/2);  //handles tick and repainting the jframe
 	}
 	
 	public Driver()
@@ -50,9 +50,10 @@ s	 */
 		this.setPreferredSize(new Dimension(960, 960));
 		setFocusable(true);
 		requestFocus();
+		grid[0][0] = 2; // first tile cannot be an apple and is already traversed/
 	}
 	
-	private void tick()
+	private static void tick()
 	{
 		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
 		updateGrid();
@@ -96,11 +97,15 @@ s	 */
 	/**
 	 * Updates the grid to reflect the movement of the character.
 	 */
-	private void updateGrid()
+	private static void updateGrid()
 	{
 		if (grid[pos.x][pos.y] == 1)
 			numFruitLeft--;
 		grid[pos.x][pos.y] = 2;
+		if(numFruitLeft == 0)
+		{
+			reset();
+		}
 	}
 	
 	private static void readGrid()
@@ -134,5 +139,6 @@ s	 */
 		numFruitLeft = 0;
 		readGrid();
 		pos.setLocation(0, 0);
+		tick();
 	}
 }
