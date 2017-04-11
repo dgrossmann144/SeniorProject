@@ -1,25 +1,30 @@
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Driver extends JPanel
+public class Driver extends JPanel implements KeyListener
 {
+	private static final long serialVersionUID = 1L;
 	private BufferedImage path = null;
 	private BufferedImage fruit = null;
 	private BufferedImage greenPath = null;
 	private BufferedImage yoshi = null;
 	private static Point pos = new Point(0, 0);
+	private static Driver panel;
+	private static int speed;
 	private static int numFruitLeft; // number of fruit left on the map
 	/**
 	 * 0 = path<br>
@@ -30,22 +35,21 @@ s	 */
 	
 	public static void main(String[] args) 
 	{
+		speed = 1;
 		JFrame frame = new JFrame ("Santa Fe Ant Problem");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Driver panel = new Driver();
+		panel = new Driver();
 		frame.getContentPane().add(panel);
 		frame.pack();
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		reset();
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask(){public void run(){panel.tick();panel.repaint();
-		}}, 0, 1000/2);  //handles tick and repainting the jframe
 	}
 	
 	public Driver()
 	{
+		addKeyListener(this);
 		this.setPreferredSize(new Dimension(960, 960));
 		setFocusable(true);
 		requestFocus();
@@ -55,7 +59,8 @@ s	 */
 	private static void tick()
 	{
 		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
-		System.out.println(grid[0][0]);
+		System.out.println(speed);
+		startTimer();
 		updateGrid();
 	}
 	
@@ -140,7 +145,45 @@ s	 */
 	{
 		numFruitLeft = 0;
 		readGrid();
+		grid[0][0] = 2;
 		pos.setLocation(0, 0);
-		tick();
+		startTimer();
 	}
+
+	public void keyPressed(KeyEvent key)
+	{
+		if(key.getKeyCode() == KeyEvent.VK_EQUALS)
+		{
+			speed++;
+		}
+		if(key.getKeyCode() == KeyEvent.VK_MINUS && speed > 1)
+		{
+			speed--;
+		}
+	}
+
+	public void keyReleased(KeyEvent arg0)
+	{
+		
+	}
+
+	public void keyTyped(KeyEvent arg0)
+	{
+		
+	}
+	
+	private static void startTimer()
+	{
+		Runnable runnable = new Runnable()
+		{
+			public void run()
+			{
+				panel.tick();
+				panel.repaint();
+			}
+		};
+		Executors.newSingleThreadScheduledExecutor().schedule(runnable, 1000/speed, TimeUnit.MILLISECONDS);
+	}
+	
+	
 }

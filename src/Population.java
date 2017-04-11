@@ -31,4 +31,17 @@ public class Population
 	{
 		individuals[x] = individual;
 	}
+	
+	public Individual getFittest()
+	{
+		int index = 0;
+		for(int x = 1; x < this.size(); x++)
+		{
+			if(getIndividual(x).getFitness() > getIndividual(index).getFitness())
+			{
+				index = x;
+			}
+		}
+		return getIndividual(index);
+	}
 }
