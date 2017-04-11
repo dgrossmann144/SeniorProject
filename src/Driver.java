@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 
 public class Driver extends JPanel
 {
-	
 	private BufferedImage path = null;
 	private BufferedImage fruit = null;
 	private BufferedImage greenPath = null;
@@ -50,7 +49,7 @@ s	 */
 		this.setPreferredSize(new Dimension(960, 960));
 		setFocusable(true);
 		requestFocus();
-		grid[0][0] = 2; // first tile cannot be an apple and is already traversed/
+		grid[0][0] = 2; // first tile cannot be an apple and is already traversed
 	}
 	
 	private void tick()
@@ -101,7 +100,9 @@ s	 */
 	private void updateGrid()
 	{
 		if (grid[pos.x][pos.y] == 1)
+		{
 			numFruitLeft--;
+		}
 		grid[pos.x][pos.y] = 2;
 		//TODO add if (numApples == 0) then reset.
 	}

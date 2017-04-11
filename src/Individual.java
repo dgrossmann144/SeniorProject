@@ -10,6 +10,13 @@ public class Individual
 	 */
 	private int[] genes = new int[geneLength];
 	private double fitness = 0;
+	private int apples, spaces;
+	
+	public Individual()
+	{
+		apples = 0;
+		spaces = 0;
+	}
 	
 	public void generate()
 	{
@@ -23,7 +30,7 @@ public class Individual
 	{
 		if(fitness == 0)
 		{
-			//fitness = FitnessCalc.getFitness(this);
+			fitness = apples / spaces;
 		}
 		return fitness;
 	}
