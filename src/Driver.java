@@ -28,7 +28,6 @@ public class Driver extends JPanel implements KeyListener
 	private static int numFruitLeft; // number of fruit left on the map
 	private static Population pop = new Population(10, true);
 	private static int popNum = -1;
-	private static int tickCount = 0;
 	/**
 	 * 0 = path<br>
 	 * 1 = fruit<br>
@@ -63,8 +62,6 @@ s	 */
 	private static void tick()
 	{
 		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
-		tickCount++;
-		System.out.println("Tick: " + tickCount);
 		if (grid[pos.x][pos.y] == 1)
 		{
 			numFruitLeft--;
@@ -153,7 +150,7 @@ s	 */
 
 	public void keyPressed(KeyEvent key)
 	{
-		if(key.getKeyCode() == KeyEvent.VK_EQUALS)
+		if(key.getKeyCode() == KeyEvent.VK_EQUALS && speed < 40)
 		{
 			speed++;
 		}
@@ -161,6 +158,7 @@ s	 */
 		{
 			speed--;
 		}
+		System.out.println("Speed: " + speed);
 	}
 
 	public void keyReleased(KeyEvent arg0)
