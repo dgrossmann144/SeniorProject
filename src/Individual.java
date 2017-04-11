@@ -10,7 +10,7 @@ public class Individual
 	 */
 	private int[] genes = new int[geneLength];
 	private double fitness = 0;
-	private int apples, spaces;
+	public int apples, spaces;
 	
 	public Individual()
 	{
