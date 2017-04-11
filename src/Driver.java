@@ -26,7 +26,7 @@ public class Driver extends JPanel implements KeyListener
 	private static Driver panel;
 	private static int speed;
 	private static int numFruitLeft; // number of fruit left on the map
-	private static Population attempts = new Population(10, true);
+	private static Population population = new Population(10, true);
 	private static int popNum = -1;
 	/**
 	 * 0 = path<br>
@@ -63,7 +63,18 @@ s	 */
 		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
 		System.out.println(speed);
 		startTimer();
-		updateGrid();
+		if (grid[pos.x][pos.y] == 1)
+		{
+			numFruitLeft--;
+			population.getIndividual(popNum).apples++;
+		}
+		grid[pos.x][pos.y] = 2;
+		population.getIndividual(popNum).spaces++;
+		
+		if(numFruitLeft == 0)
+		{
+			reset();
+		}
 	}
 	
 	protected void paintComponent(Graphics g)
@@ -101,24 +112,6 @@ s	 */
 		}
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
 	}
-	/**
-	 * Updates the grid to reflect the movement of the character.
-	 */
-	private static void updateGrid()
-	{
-		if (grid[pos.x][pos.y] == 1)
-		{
-			numFruitLeft--;
-			attempts.getIndividual(popNum).apples++;
-		}
-		grid[pos.x][pos.y] = 2;
-		attempts.getIndividual(popNum).spaces++;
-		
-		if(numFruitLeft == 0)
-		{
-			reset();
-		}
-	}
 	
 	private static void readGrid()
 	{
@@ -152,7 +145,7 @@ s	 */
 		readGrid();
 		grid[0][0] = 2;
 		pos.setLocation(0, 0);
-		startTimer();
+		tick();
 		popNum++;
 	}
 
