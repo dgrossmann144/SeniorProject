@@ -64,7 +64,18 @@ s	 */
 		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
 		tickCount++;
 		System.out.println("Tick: " + tickCount);
-		updateGrid();
+		if (grid[pos.x][pos.y] == 1)
+		{
+			numFruitLeft--;
+			pop.getIndividual(popNum).apples++;
+		}
+		grid[pos.x][pos.y] = 2;
+		pop.getIndividual(popNum).spaces++;
+		
+		if(numFruitLeft == 0)
+		{
+			reset();
+		}
 		startTimer();
 	}
 	
@@ -102,24 +113,6 @@ s	 */
 			}
 		}
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
-	}
-	/**
-	 * Updates the grid to reflect the movement of the character.
-	 */
-	private static void updateGrid()
-	{
-		if (grid[pos.x][pos.y] == 1)
-		{
-			numFruitLeft--;
-			pop.getIndividual(popNum).apples++;
-		}
-		grid[pos.x][pos.y] = 2;
-		pop.getIndividual(popNum).spaces++;
-		
-		if(numFruitLeft == 0)
-		{
-			reset();
-		}
 	}
 	
 	private static void readGrid()
