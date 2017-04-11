@@ -113,7 +113,7 @@ s	 */
 	{
 		try
 		{
-			Scanner scan = new Scanner(new File("C:\\Users\\Danny G\\workspace\\SeniorProject\\assets\\Grid.txt"));
+			Scanner scan = new Scanner(new File("assets\\Grid.txt"));
 			String[] input = new String[30];
 			for(int x = 0; x < grid.length; x++)
 			{
