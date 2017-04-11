@@ -180,12 +180,13 @@ s	 */
 	{
 		if(key.getKeyCode() == KeyEvent.VK_EQUALS)
 		{
-			speed++;
+			speed *= 2;
 		}
 		if(key.getKeyCode() == KeyEvent.VK_MINUS && speed > 1)
 		{
-			speed--;
+			speed /= 2;
 		}
+		System.out.println("Speed: " + speed);
 	}
 
 	public void keyReleased(KeyEvent arg0)
@@ -204,7 +205,7 @@ s	 */
 		{
 			public void run()
 			{
-				panel.tick();
+				Driver.tick();
 				panel.repaint();
 			}
 		};
