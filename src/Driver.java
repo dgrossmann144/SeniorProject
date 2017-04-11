@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Timer;
@@ -18,18 +19,17 @@ public class Driver extends JPanel
 	private BufferedImage fruit = null;
 	private BufferedImage greenPath = null;
 	private BufferedImage yoshi = null;
-	private Point pos = new Point(0, 0);
-	private int numFruitLeft; // number of fruit left on the map
+	private static Point pos = new Point(0, 0);
+	private static int numFruitLeft; // number of fruit left on the map
 	/**
 	 * 0 = path<br>
 	 * 1 = fruit<br>
 	 * 2 = completed path<br>
 s	 */
-	private int[][] grid = new int[30][30];
+	private static int[][] grid = new int[30][30];
 	
 	public static void main(String[] args) 
 	{
-		
 		JFrame frame = new JFrame ("Santa Fe Ant Problem");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Driver panel = new Driver();
@@ -38,7 +38,7 @@ s	 */
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		
+		reset();
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask(){public void run(){panel.tick();panel.repaint();
 		}}, 0, 1000/2);  //handles tick and repainting the jframe
@@ -52,9 +52,8 @@ s	 */
 		grid[0][0] = 2; // first tile cannot be an apple and is already traversed
 	}
 	
-	private void tick()
+	private static void tick()
 	{
-		System.out.println("tick");
 		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
 		updateGrid();
 	}
@@ -97,34 +96,50 @@ s	 */
 	/**
 	 * Updates the grid to reflect the movement of the character.
 	 */
-	private void updateGrid()
+	private static void updateGrid()
 	{
 		if (grid[pos.x][pos.y] == 1)
 		{
 			numFruitLeft--;
 		}
 		grid[pos.x][pos.y] = 2;
-		//TODO add if (numApples == 0) then reset.
-	}
-	
-	private void readGrid()
-	{
-		Scanner scan = new Scanner(System.in);
-		String[] input = new String[30];
-		for(int x = 0; x < grid.length; x++)
+		if(numFruitLeft == 0)
 		{
-			scan.nextLine().split(" ");
-			for(int y = 0; y < grid[x].length; y++)
-			{
-				grid[x][y] = Integer.parseInt(input[y]);
-			}
+			reset();
 		}
-		scan.close();
 	}
 	
-	private void reset()
+	private static void readGrid()
 	{
+		try
+		{
+			Scanner scan = new Scanner(new File("C:\\Users\\Danny G\\workspace\\SeniorProject\\assets\\Grid.txt"));
+			String[] input = new String[30];
+			for(int x = 0; x < grid.length; x++)
+			{
+				
+				input = scan.nextLine().split(" ");
+				for(int y = 0; y < grid[x].length; y++)
+				{
+					grid[y][x] = Integer.parseInt(input[y]);
+					if(Integer.parseInt(input[y]) == 1)
+					{
+						numFruitLeft++;
+					}
+				}
+			}
+			scan.close();
+		} catch (FileNotFoundException e)
+		{
+			System.out.println(e);
+		}
+	}
+	
+	private static void reset()
+	{
+		numFruitLeft = 0;
 		readGrid();
 		pos.setLocation(0, 0);
+		tick();
 	}
 }
