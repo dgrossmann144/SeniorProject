@@ -48,6 +48,7 @@ s	 */
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		reset();
+		tick();
 	}
 	
 	public Driver()
@@ -148,7 +149,6 @@ s	 */
 		grid[0][0] = 2;
 		pos.setLocation(0, 0);
 		popNum++;
-		tick();
 	}
 
 	public void keyPressed(KeyEvent key)
