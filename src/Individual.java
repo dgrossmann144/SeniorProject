@@ -1,7 +1,7 @@
 
 public class Individual
 {
-	private static int geneLength = 10;
+	private static int geneLength = 300;
 	/**
 	 * 0 = up<br>
 	 * 1 = left<br>
