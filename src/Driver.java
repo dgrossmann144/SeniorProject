@@ -170,10 +170,10 @@ s	 */
 		pos.setLocation(0, 0);
 		geneNum = 0;
 		popNum++;
-//		if(popNum >= pop.size())
-//		{
-//			pop.
-//		}
+		if(popNum >= pop.size())
+		{
+			Population newPop = new Population(pop.size(), false);
+		}
 	}
 
 	public void keyPressed(KeyEvent key)
