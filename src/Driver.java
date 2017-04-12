@@ -26,8 +26,9 @@ public class Driver extends JPanel implements KeyListener
 	private static Driver panel;
 	private static int speed;
 	private static int numFruitLeft; // number of fruit left on the map
-	private static Population pop = new Population(10, true);
+	private static Population pop;
 	private static int popNum = -1;
+	private static int geneNum = 0;
 	/**
 	 * 0 = path<br>
 	 * 1 = fruit<br>
@@ -46,6 +47,7 @@ s	 */
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		pop = new Population(20, true);
 		reset();
 		tick();
 	}
@@ -61,7 +63,28 @@ s	 */
 	
 	private static void tick()
 	{
-		pos.setLocation(pos.getX() + 1, pos.getY() + 1);
+		switch(pop.getIndividual(popNum).getGene(geneNum))
+		{
+			case 0:
+				pos.setLocation(pos.getX(), pos.getY() - 1);
+				break;
+			case 1:
+				pos.setLocation(pos.getX() - 1, pos.getY());
+				break;
+			case 2:
+				pos.setLocation(pos.getX(), pos.getY() + 1);
+				break;
+			case 3:
+				pos.setLocation(pos.getX() + 1, pos.getY());
+				break;
+		}
+		bound();
+		geneNum++;
+		if(geneNum >= pop.getIndividual(popNum).size())
+		{
+			System.out.println("Reset");
+			reset();
+		}
 		if (grid[pos.x][pos.y] == 1)
 		{
 			numFruitLeft--;
@@ -145,7 +168,12 @@ s	 */
 		readGrid();
 		grid[0][0] = 2;
 		pos.setLocation(0, 0);
+		geneNum = 0;
 		popNum++;
+//		if(popNum >= pop.size())
+//		{
+//			pop.
+//		}
 	}
 
 	public void keyPressed(KeyEvent key)
@@ -182,6 +210,26 @@ s	 */
 			}
 		};
 		Executors.newSingleThreadScheduledExecutor().schedule(runnable, 1000/speed, TimeUnit.MILLISECONDS);
+	}
+	
+	private static void bound()
+	{
+		if(pos.getX() < 0)
+		{
+			pos.setLocation(0, pos.getY());
+		}
+		if(pos.getX() > 29)
+		{
+			pos.setLocation(29, pos.getY());
+		}
+		if(pos.getY() < 0)
+		{
+			pos.setLocation(pos.getX(), 0);
+		}
+		if(pos.getY() > 29)
+		{
+			pos.setLocation(pos.getX(), 29);
+		}
 	}
 	
 	

@@ -1,7 +1,7 @@
 
 public class Individual
 {
-	private static int geneLength = 10;
+	private static int geneLength = 300;
 	/**
 	 * 0 = up<br>
 	 * 1 = left<br>
@@ -54,25 +54,4 @@ public class Individual
     {
     	return geneLength;
     }
-    
-    public void setApples(int apples)
-    {
-    	this.apples = apples;
-    }
-    
-    public int getApples()
-    {
-    	return this.apples;
-    }
-    
-    public int getSpaces()
-    {
-    	return this.spaces;
-    }
-    
-    public void setSpaces(int spaces)
-    {
-    	this.spaces = spaces;
-    }
-    
 }
