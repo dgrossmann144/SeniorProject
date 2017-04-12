@@ -150,13 +150,13 @@ s	 */
 
 	public void keyPressed(KeyEvent key)
 	{
-		if(key.getKeyCode() == KeyEvent.VK_EQUALS && speed < 40)
+		if(key.getKeyCode() == KeyEvent.VK_EQUALS)
 		{
-			speed++;
+			speed *= 2;
 		}
 		if(key.getKeyCode() == KeyEvent.VK_MINUS && speed > 1)
 		{
-			speed--;
+			speed /= 2;
 		}
 		System.out.println("Speed: " + speed);
 	}
@@ -177,7 +177,7 @@ s	 */
 		{
 			public void run()
 			{
-				panel.tick();
+				Driver.tick();
 				panel.repaint();
 			}
 		};
