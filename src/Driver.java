@@ -58,7 +58,6 @@ s	 */
 		this.setPreferredSize(new Dimension(960, 960));
 		setFocusable(true);
 		requestFocus();
-		grid[0][0] = 2; // first tile cannot be an apple and is already traversed
 	}
 	
 	private static void tick()
@@ -82,7 +81,6 @@ s	 */
 		geneNum++;
 		if(geneNum >= pop.getIndividual(popNum).size())
 		{
-			System.out.println("Reset");
 			reset();
 		}
 		if (grid[pos.x][pos.y] == 1)
@@ -166,7 +164,7 @@ s	 */
 	{
 		numFruitLeft = 0;
 		readGrid();
-		grid[0][0] = 2;
+		grid[0][0] = 2; // first tile cannot be an apple and is already traversed
 		pos.setLocation(0, 0);
 		geneNum = 0;
 		popNum++;
@@ -178,7 +176,7 @@ s	 */
 
 	public void keyPressed(KeyEvent key)
 	{
-		if(key.getKeyCode() == KeyEvent.VK_EQUALS)
+		if(key.getKeyCode() == KeyEvent.VK_EQUALS && speed < 1073741824) // max int value
 		{
 			speed *= 2;
 		}
