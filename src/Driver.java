@@ -34,7 +34,7 @@ public class Driver extends JPanel implements KeyListener
 	 * 1 = fruit<br>
 	 * 2 = completed path<br>
 s	 */
-	private static int[][] grid = new int[30][30];
+	private static int[][] grid = new int[32][32];
 	
 	public static void main(String[] args) 
 	{
@@ -47,7 +47,7 @@ s	 */
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		pop = new Population(20, true);
+		pop = new Population(10, true);
 		reset();
 		tick();
 	}
@@ -55,7 +55,7 @@ s	 */
 	public Driver()
 	{
 		addKeyListener(this);
-		this.setPreferredSize(new Dimension(960, 960));
+		this.setPreferredSize(new Dimension(1024, 1024));
 		setFocusable(true);
 		requestFocus();
 		grid[0][0] = 2; // first tile cannot be an apple and is already traversed
@@ -80,21 +80,21 @@ s	 */
 		}
 		bound();
 		geneNum++;
-		if(geneNum >= pop.getIndividual(popNum).size())
-		{
-			reset();
-		}
 		if (grid[pos.x][pos.y] == 1)
 		{
 			numFruitLeft--;
 			pop.getIndividual(popNum).apples++;
 		}
-		grid[pos.x][pos.y] = 2;
-		pop.getIndividual(popNum).spaces++;
-		
-		if(numFruitLeft == 0)
+		if(geneNum >= pop.getIndividual(popNum).size())
 		{
 			reset();
+		} else if(numFruitLeft == 0)
+		{
+			reset();
+		} else
+		{
+			grid[pos.x][pos.y] = 2;
+			pop.getIndividual(popNum).spaces++;
 		}
 		panel.repaint();
 	}
@@ -112,9 +112,9 @@ s	 */
 			e.printStackTrace();
 		}
 		
-		for(int x = 0; x < 30; x++)
+		for(int x = 0; x < 32; x++)
 		{
-			for(int y = 0; y < 30; y++)
+			for(int y = 0; y < 32; y++)
 			{
 				switch(grid[x][y])
 				{
@@ -146,7 +146,7 @@ s	 */
 		try
 		{
 			Scanner scan = new Scanner(new File("assets\\Grid.txt"));
-			String[] input = new String[30];
+			String[] input = new String[32];
 			for(int x = 0; x < grid.length; x++)
 			{
 				
@@ -178,7 +178,10 @@ s	 */
 		if(popNum >= pop.size())
 		{
 			System.out.println("Pop reset");
+			System.out.println(pop.getFittest().getFitness());
+			System.out.println(pop.getFittest());
 			Population newPop = Algorithims.evolve(pop);
+			pop = newPop;
 			popNum = 0;
 		}
 	}
@@ -224,17 +227,17 @@ s	 */
 		{
 			pos.setLocation(0, pos.getY());
 		}
-		if(pos.getX() > 29)
+		if(pos.getX() > 31)
 		{
-			pos.setLocation(29, pos.getY());
+			pos.setLocation(31, pos.getY());
 		}
 		if(pos.getY() < 0)
 		{
 			pos.setLocation(pos.getX(), 0);
 		}
-		if(pos.getY() > 29)
+		if(pos.getY() > 31)
 		{
-			pos.setLocation(pos.getX(), 29);
+			pos.setLocation(pos.getX(), 31);
 		}
 	}
 	

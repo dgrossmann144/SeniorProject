@@ -1,7 +1,7 @@
 
 public class Individual
 {
-	private static int geneLength = 300;
+	private static int geneLength = 600;
 	/**
 	 * 0 = up<br>
 	 * 1 = left<br>
@@ -15,7 +15,7 @@ public class Individual
 	public Individual()
 	{
 		apples = 0;
-		spaces = 0;
+		spaces = 1;
 	}
 	
 	public void generate()
@@ -28,11 +28,9 @@ public class Individual
 	
 	public double getFitness()
 	{
-		System.out.println("Apples: " + apples);
-		System.out.println("Spaces: " + spaces);
-		if(fitness == 0)
+		if(fitness == 0 && spaces != 0)
 		{
-			fitness = apples / spaces;
+			fitness = (double)apples / spaces;
 		}
 		return fitness;
 	}
@@ -55,5 +53,16 @@ public class Individual
     public int size()
     {
     	return geneLength;
+    }
+    
+    public String toString()
+    {
+    	String result = "";
+    	for(int x = 0; x < genes.length; x++)
+    	{
+    		result += genes[x];
+    	}
+    
+    	return result;
     }
 }

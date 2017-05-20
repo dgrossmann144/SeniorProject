@@ -60,7 +60,6 @@ public class Algorithims
 			tournament.saveIndividual(x, pop.getIndividual(id));
 		}
 		
-		System.out.println(tournament.getFittest().getFitness());
 		return tournament.getFittest();
 	}
 
