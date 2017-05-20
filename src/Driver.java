@@ -82,7 +82,6 @@ s	 */
 		geneNum++;
 		if(geneNum >= pop.getIndividual(popNum).size())
 		{
-			System.out.println("Reset");
 			reset();
 		}
 		if (grid[pos.x][pos.y] == 1)
@@ -97,7 +96,7 @@ s	 */
 		{
 			reset();
 		}
-		startTimer();
+		panel.repaint();
 	}
 	
 	protected void paintComponent(Graphics g)
@@ -134,6 +133,12 @@ s	 */
 			}
 		}
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
+		try {
+			Thread.sleep(1000/speed);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		tick();
 	}
 	
 	private static void readGrid()
@@ -172,13 +177,15 @@ s	 */
 		popNum++;
 		if(popNum >= pop.size())
 		{
-			Population newPop = new Population(pop.size(), false);
+			System.out.println("Pop reset");
+			Population newPop = Algorithims.evolve(pop);
+			popNum = 0;
 		}
 	}
 
 	public void keyPressed(KeyEvent key)
 	{
-		if(key.getKeyCode() == KeyEvent.VK_EQUALS)
+		if(key.getKeyCode() == KeyEvent.VK_EQUALS && speed < Integer.MAX_VALUE/2)
 		{
 			speed *= 2;
 		}
@@ -186,7 +193,6 @@ s	 */
 		{
 			speed /= 2;
 		}
-		System.out.println("Speed: " + speed);
 	}
 
 	public void keyReleased(KeyEvent arg0)
@@ -199,18 +205,18 @@ s	 */
 		
 	}
 	
-	private static void startTimer()
-	{
-		Runnable runnable = new Runnable()
-		{
-			public void run()
-			{
-				Driver.tick();
-				panel.repaint();
-			}
-		};
-		Executors.newSingleThreadScheduledExecutor().schedule(runnable, 1000/speed, TimeUnit.MILLISECONDS);
-	}
+//	private static void startTimer()
+//	{
+//		Runnable runnable = new Runnable()
+//		{
+//			public void run()
+//			{
+//				Driver.tick();
+//				panel.repaint();
+//			}
+//		};
+//		Executors.newSingleThreadScheduledExecutor().schedule(runnable, 1000/speed, TimeUnit.MILLISECONDS);
+//	}
 	
 	private static void bound()
 	{

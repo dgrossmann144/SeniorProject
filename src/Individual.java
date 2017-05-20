@@ -9,7 +9,7 @@ public class Individual
 	 * 3 = right
 	 */
 	private int[] genes = new int[geneLength];
-	private double fitness = 0;
+	public double fitness = 0;
 	public int apples, spaces;
 	
 	public Individual()
@@ -28,6 +28,8 @@ public class Individual
 	
 	public double getFitness()
 	{
+		System.out.println("Apples: " + apples);
+		System.out.println("Spaces: " + spaces);
 		if(fitness == 0)
 		{
 			fitness = apples / spaces;

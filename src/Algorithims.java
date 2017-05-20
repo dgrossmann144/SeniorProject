@@ -15,6 +15,7 @@ public class Algorithims
 			Individual individual2 = tournamentSelection(pop);
 			Individual newIndividual = crossover(individual1, individual2);
 			newPop.saveIndividual(i, newIndividual);
+			mutate(newPop.getIndividual(i));
 		}
 		
 		return newPop;
@@ -56,9 +57,10 @@ public class Algorithims
 		for(int x = 0; x < tournament.size(); x++)
 		{
 			int id = (int) (Math.random() * pop.size());
-			tournament.saveIndividual(x, pop.getIndividual(x));
+			tournament.saveIndividual(x, pop.getIndividual(id));
 		}
 		
+		System.out.println(tournament.getFittest().getFitness());
 		return tournament.getFittest();
 	}
 
