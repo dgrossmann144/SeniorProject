@@ -58,7 +58,6 @@ s	 */
 		this.setPreferredSize(new Dimension(1024, 1024));
 		setFocusable(true);
 		requestFocus();
-		grid[0][0] = 2; // first tile cannot be an apple and is already traversed
 	}
 	
 	private static void tick()
@@ -171,7 +170,7 @@ s	 */
 	{
 		numFruitLeft = 0;
 		readGrid();
-		grid[0][0] = 2;
+		grid[0][0] = 2; // first tile cannot be an apple and is already traversed
 		pos.setLocation(0, 0);
 		geneNum = 0;
 		popNum++;
