@@ -1,4 +1,3 @@
-
 public class Population
 {
 	private Individual individuals[];
@@ -32,7 +31,7 @@ public class Population
 		individuals[x] = individual;
 	}
 	
-	public Individual getFittest()
+	public int getFittest()
 	{
 		int index = 0;
 		for(int x = 1; x < this.size(); x++)
@@ -42,6 +41,6 @@ public class Population
 				index = x;
 			}
 		}
-		return getIndividual(index);
+		return index;
 	}
 }

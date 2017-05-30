@@ -1,14 +1,13 @@
-
 public class Individual
 {
-	private static int geneLength = 600;
+	public static final int geneLength = 200;
 	/**
 	 * 0 = up<br>
 	 * 1 = left<br>
 	 * 2 = down<br>
 	 * 3 = right
 	 */
-	private int[] genes = new int[geneLength];
+	public int[] genes = new int[geneLength];
 	public double fitness = 0;
 	public int apples, spaces;
 	
@@ -30,16 +29,11 @@ public class Individual
 	{
 		if(fitness == 0 && spaces != 0)
 		{
-			fitness = (double)apples / spaces;
+			fitness = Math.pow(apples, 2)/ Math.pow(spaces, 2);
 		}
 		return fitness;
 	}
 	
-	public static void setDefaultGeneLength(int length)
-	{
-        geneLength = length;
-    }
-    
     public int getGene(int index)
     {
         return genes[index];

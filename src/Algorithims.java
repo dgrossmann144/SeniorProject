@@ -1,13 +1,13 @@
 public class Algorithims
 {
-	public static final double MUTATION_RATE = .015;
+	public static final double MUTATION_RATE = .2;
 	public static final int TOURNAMENT_SIZE = 5;
 	
 	public static Population evolve(Population pop)
 	{
 		Population newPop = new Population(pop.size(), false);
 
-		newPop.saveIndividual(0, pop.getFittest());
+		newPop.saveIndividual(0, pop.getIndividual(pop.getFittest()));
 
 		for (int i = 1; i < pop.size(); i++)
 		{
@@ -60,7 +60,7 @@ public class Algorithims
 			tournament.saveIndividual(x, pop.getIndividual(id));
 		}
 		
-		return tournament.getFittest();
+		return tournament.getIndividual(tournament.getFittest());
 	}
 
 }

@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -23,12 +21,14 @@ public class Driver extends JPanel implements KeyListener
 	private BufferedImage greenPath = null;
 	private BufferedImage yoshi = null;
 	private static Point pos = new Point(0, 0);
+	private static int[][] gridInput = new int[32][32];
 	private static Driver panel;
 	private static int speed;
 	private static int numFruitLeft; // number of fruit left on the map
+	private static int totalFruit;
+	private static int popNum = 1;
 	private static Population pop;
-	private static int popNum = -1;
-	private static int geneNum = 0;
+	private static int count = 1;
 	/**
 	 * 0 = path<br>
 	 * 1 = fruit<br>
@@ -47,55 +47,118 @@ s	 */
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		pop = new Population(10, true);
-		reset();
-		tick();
+		pop = new Population(100, true);
+		
+		double fitness = tick();
+		while(numFruitLeft != 0 && fitness < .35)
+		{
+			fitness = tick();
+			System.out.println("Achieved a fitness of " + fitness);
+		}
 	}
 	
 	public Driver()
 	{
 		addKeyListener(this);
-		this.setPreferredSize(new Dimension(1024, 1024));
+		this.setPreferredSize(new Dimension(1008, 1008));
 		setFocusable(true);
 		requestFocus();
 	}
 	
-	private static void tick()
+	private static double tick()
 	{
-		switch(pop.getIndividual(popNum).getGene(geneNum))
+		indivLoop:for(int indiv = 0; indiv < pop.size(); indiv++)
 		{
-			case 0:
-				pos.setLocation(pos.getX(), pos.getY() - 1);
-				break;
-			case 1:
-				pos.setLocation(pos.getX() - 1, pos.getY());
-				break;
-			case 2:
-				pos.setLocation(pos.getX(), pos.getY() + 1);
-				break;
-			case 3:
-				pos.setLocation(pos.getX() + 1, pos.getY());
-				break;
-		}
-		bound();
-		geneNum++;
-		if (grid[pos.x][pos.y] == 1)
-		{
-			numFruitLeft--;
-			pop.getIndividual(popNum).apples++;
-		}
-		if(geneNum >= pop.getIndividual(popNum).size())
-		{
-			reset();
-		} else if(numFruitLeft == 0)
-		{
-			reset();
-		} else
-		{
+			//Reset grid between individuals
+			numFruitLeft = totalFruit;
+			if(popNum == 1)
+			{
+				readGrid();
+			} else
+			{
+				for(int x = 0; x < grid.length; x++)
+				{
+					for(int y = 0; y < grid[x].length; y++)
+					{
+						grid[x][y] = gridInput[x][y];
+					}
+				}
+			}
+			pos.setLocation(0, 0);
+			
+			if (grid[pos.x][pos.y] == 1)
+			{
+				numFruitLeft--;
+				pop.getIndividual(indiv).apples++;
+			}
 			grid[pos.x][pos.y] = 2;
-			pop.getIndividual(popNum).spaces++;
+			
+			for(int gene = 0; gene < pop.getIndividual(indiv).size(); gene++)
+			{
+				switch(pop.getIndividual(indiv).getGene(gene))
+				{
+					case 0:
+						pos.setLocation(pos.getX(), pos.getY() - 1);
+						break;
+					case 1:
+						pos.setLocation(pos.getX() - 1, pos.getY());
+						break;
+					case 2:
+						pos.setLocation(pos.getX(), pos.getY() + 1);
+						break;
+					case 3:
+						pos.setLocation(pos.getX() + 1, pos.getY());
+						break;
+				}
+				
+				if(bound())
+				{
+					pop.getIndividual(indiv).spaces = pop.getIndividual(indiv).size();
+					continue indivLoop;
+				} else
+				{
+					if (grid[pos.x][pos.y] == 1)
+					{
+						numFruitLeft--;
+						pop.getIndividual(indiv).apples++;
+					}
+					if(grid[pos.x][pos.y] == 2)
+					{
+						pop.getIndividual(indiv).spaces = pop.getIndividual(indiv).size();
+						continue indivLoop;
+					}
+					if(numFruitLeft == 0)
+					{
+						continue indivLoop;
+					} else
+					{
+						grid[pos.x][pos.y] = 2;
+						pop.getIndividual(indiv).spaces++;
+					}
+				}
+			}
 		}
-		panel.repaint();
+		return reset();
+	}
+	
+	private static double reset()
+	{
+		System.out.println();
+		System.out.println("Population " + popNum + " complete, max fitness: " + pop.getIndividual(pop.getFittest()).getFitness());
+		System.out.println(pop.getIndividual(pop.getFittest()));
+		popNum++;
+		pos.setLocation(0, 0);
+		for(int x = 0; x < grid.length; x++)
+		{
+			for(int y = 0; y < grid[x].length; y++)
+			{
+				grid[x][y] = gridInput[x][y];
+			}
+		}
+		showFittest(pop.getIndividual(pop.getFittest()).genes);
+		Population newPop = Algorithims.evolve(pop);
+		pop = newPop;
+		return pop.getIndividual(pop.getFittest()).getFitness();
 	}
 	
 	protected void paintComponent(Graphics g)
@@ -132,12 +195,6 @@ s	 */
 			}
 		}
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
-		try {
-			Thread.sleep(1000/speed);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		tick();
 	}
 	
 	private static void readGrid()
@@ -153,35 +210,18 @@ s	 */
 				for(int y = 0; y < grid[x].length; y++)
 				{
 					grid[y][x] = Integer.parseInt(input[y]);
+					gridInput[y][x] = grid[y][x];
 					if(Integer.parseInt(input[y]) == 1)
 					{
 						numFruitLeft++;
 					}
 				}
 			}
+			totalFruit = numFruitLeft;
 			scan.close();
 		} catch (FileNotFoundException e)
 		{
 			System.out.println(e);
-		}
-	}
-	
-	private static void reset()
-	{
-		numFruitLeft = 0;
-		readGrid();
-		grid[0][0] = 2; // first tile cannot be an apple and is already traversed
-		pos.setLocation(0, 0);
-		geneNum = 0;
-		popNum++;
-		if(popNum >= pop.size())
-		{
-			System.out.println("Pop reset");
-			System.out.println(pop.getFittest().getFitness());
-			System.out.println(pop.getFittest());
-			Population newPop = Algorithims.evolve(pop);
-			pop = newPop;
-			popNum = 0;
 		}
 	}
 
@@ -207,38 +247,59 @@ s	 */
 		
 	}
 	
-//	private static void startTimer()
-//	{
-//		Runnable runnable = new Runnable()
-//		{
-//			public void run()
-//			{
-//				Driver.tick();
-//				panel.repaint();
-//			}
-//		};
-//		Executors.newSingleThreadScheduledExecutor().schedule(runnable, 1000/speed, TimeUnit.MILLISECONDS);
-//	}
-	
-	private static void bound()
+	private static boolean bound()
 	{
 		if(pos.getX() < 0)
 		{
-			pos.setLocation(0, pos.getY());
-		}
-		if(pos.getX() > 31)
+			return true;
+		} else if(pos.getX() > 31)
 		{
-			pos.setLocation(31, pos.getY());
+			return true;
 		}
 		if(pos.getY() < 0)
 		{
-			pos.setLocation(pos.getX(), 0);
-		}
-		if(pos.getY() > 31)
+			return true;
+		} else if(pos.getY() > 31)
 		{
-			pos.setLocation(pos.getX(), 31);
+			return true;
 		}
+		return false;
 	}
 	
-	
+	private static void showFittest(int[] genes)
+	{
+		for(int gene = 0; gene < genes.length; gene++)
+		{
+			try {
+				Thread.sleep(1000/speed);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			switch(genes[gene])
+			{
+				case 0:
+					pos.setLocation(pos.getX(), pos.getY() - 1);
+					break;
+				case 1:
+					pos.setLocation(pos.getX() - 1, pos.getY());
+					break;
+				case 2:
+					pos.setLocation(pos.getX(), pos.getY() + 1);
+					break;
+				case 3:
+					pos.setLocation(pos.getX() + 1, pos.getY());
+					break;
+			}
+			if(bound())
+			{
+				break;
+			}
+			if(grid[pos.x][pos.y] == 2)
+			{
+				break;
+			}
+			grid[pos.x][pos.y] = 2;
+			panel.repaint();
+		}
+	}
 }
