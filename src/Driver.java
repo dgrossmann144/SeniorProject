@@ -193,6 +193,8 @@ s	 */
 				}
 			}
 		}
+		System.out.println(pos.x);
+		System.out.println(pos.y);
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
 	}
 	
@@ -267,11 +269,10 @@ s	 */
 	
 	private static void showFittest(int[] genes)
 	{
-		System.out.println(pos.x);
-		System.out.println(pos.y);
 		grid[0][0] = 2;
 		for(int gene = 0; gene < genes.length; gene++)
 		{
+			panel.repaint();
 			try {
 				Thread.sleep(1000/speed);
 			} catch (InterruptedException e) {
@@ -301,7 +302,6 @@ s	 */
 				break;
 			}
 			grid[pos.x][pos.y] = 2;
-			panel.repaint();
 		}
 	}
 }
