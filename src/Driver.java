@@ -28,7 +28,6 @@ public class Driver extends JPanel implements KeyListener
 	private static int totalFruit;
 	private static int popNum = 1;
 	private static Population pop;
-	private static int count = 1;
 	/**
 	 * 0 = path<br>
 	 * 1 = fruit<br>
@@ -268,6 +267,9 @@ s	 */
 	
 	private static void showFittest(int[] genes)
 	{
+		System.out.println(pos.x);
+		System.out.println(pos.y);
+		grid[0][0] = 2;
 		for(int gene = 0; gene < genes.length; gene++)
 		{
 			try {
