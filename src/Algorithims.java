@@ -1,6 +1,6 @@
 public class Algorithims
 {
-	public static final double MUTATION_RATE = .2;
+	public static double mutationRate = .1;
 	public static final int TOURNAMENT_SIZE = 5;
 	
 	public static Population evolve(Population pop)
@@ -43,11 +43,16 @@ public class Algorithims
 	{
 		for(int x = 0; x < individual.size(); x++)
 		{
-			if(Math.random() < MUTATION_RATE)
+			if(Math.random() < mutationRate)
 			{
+				if(mutationRate < .5)
+				{
+					mutationRate += .005;
+				}
 				individual.setGene(x, (int) (Math.random() * 4));
 			}
 		}
+		mutationRate = .1;
 	}
 	
 	public static Individual tournamentSelection(Population pop)

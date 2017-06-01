@@ -29,7 +29,7 @@ public class Individual
 	{
 		if(fitness == 0 && spaces != 0)
 		{
-			fitness = Math.pow(apples, 2)/ Math.pow(spaces, 2);
+			fitness = Math.pow(apples, 2) / Math.pow(spaces, 2);
 		}
 		return fitness;
 	}

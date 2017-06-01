@@ -49,7 +49,7 @@ s	 */
 		pop = new Population(100, true);
 		
 		double fitness = tick();
-		while(numFruitLeft != 0 && fitness < .35)
+		while(numFruitLeft != 0 && fitness < 89)
 		{
 			fitness = tick();
 			System.out.println("Achieved a fitness of " + fitness);
@@ -142,9 +142,9 @@ s	 */
 	
 	private static double reset()
 	{
-		System.out.println();
 		System.out.println("Population " + popNum + " complete, max fitness: " + pop.getIndividual(pop.getFittest()).getFitness());
 		System.out.println(pop.getIndividual(pop.getFittest()));
+		System.out.println();
 		popNum++;
 		pos.setLocation(0, 0);
 		for(int x = 0; x < grid.length; x++)
@@ -193,8 +193,6 @@ s	 */
 				}
 			}
 		}
-		System.out.println(pos.x);
-		System.out.println(pos.y);
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
 	}
 	
