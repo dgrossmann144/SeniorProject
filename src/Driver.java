@@ -65,7 +65,7 @@ public class Driver extends JPanel implements KeyListener
 		readGrid();
 		
 		//Main loop 
-		while(numFruitLeft != 0 || fitness < 89)
+		while(numFruitLeft != 0 || fitness < .37)
 		{
 			fitness = calcFitness();
 			System.out.println("Achieved a fitness of " + fitness);

@@ -66,14 +66,9 @@ public class Algorithims
 		{
 			if(Math.random() < mutationRate)
 			{
-				if(mutationRate < .5)
-				{
-					mutationRate += .005;
-				}
 				individual.setGene(x, (int) (Math.random() * 4));
 			}
 		}
-		mutationRate = .1;
 	}
 	
 	/**

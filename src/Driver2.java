@@ -21,6 +21,7 @@ public class Driver2 extends JPanel implements KeyListener
 	private BufferedImage greenPath = null;
 	private BufferedImage yoshi = null;
 	private static Point pos = new Point(0, 0);
+	private static Point startPos = new Point(0, 0);
 	/**
 	 * Stores the initial board for resetting
 	 */
@@ -28,7 +29,7 @@ public class Driver2 extends JPanel implements KeyListener
 	/**
 	 * User interface
 	 */
-	private static Driver panel;
+	private static Driver2 panel;
 	private static int speed = 1;
 	private static int numFruitLeft;
 	private static int totalFruit = 0;
@@ -54,13 +55,14 @@ public class Driver2 extends JPanel implements KeyListener
 	 * Number of times fitness has been repeated
 	 */
 	private static double fitnessCount = 0;
+	private static String curBestPath = "";
 	
 	public static void main(String[] args) 
 	{
 		//Initializes window for drawing to
 		JFrame frame = new JFrame ("Santa Fe Ant Problem");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		panel = new Driver();
+		panel = new Driver2();
 		frame.getContentPane().add(panel);
 		frame.pack();
 		frame.setResizable(false);
@@ -73,7 +75,7 @@ public class Driver2 extends JPanel implements KeyListener
 		readGrid();
 		
 		//Main loop 
-		while(numFruitLeft != 0 || fitness < 89)
+		while(numFruitLeft != 0 || fitness < .37)
 		{
 			fitness = calcFitness();
 			if(fitness == currentMaxFitness)
@@ -86,9 +88,11 @@ public class Driver2 extends JPanel implements KeyListener
 			}
 			if(fitnessCount == 1000 && Individual.geneLength < 200)
 			{
-				Individual.setGeneLength(Individual.geneLength + 10);
+				curBestPath += pop.getIndividual(pop.getFittest()).toString();
+				pop = new Population(pop.size(), true);
+				updateStartPos();
+				fitnessCount = 0;
 			}
-				
 			System.out.println("Achieved a fitness of " + fitness);
 		}
 		frame.dispose();
@@ -116,7 +120,7 @@ public class Driver2 extends JPanel implements KeyListener
 					grid[x][y] = gridInput[x][y];
 				}
 			}
-			pos.setLocation(0, 0);
+			pos.setLocation(startPos.x, startPos.y);
 			
 			//Checks first space for fruit
 			if (grid[pos.x][pos.y] == 1)
@@ -124,7 +128,7 @@ public class Driver2 extends JPanel implements KeyListener
 				numFruitLeft--;
 				pop.getIndividual(indiv).apples++;
 			}
-			grid[pos.x][pos.y] = 2;
+			grid[startPos.x][startPos.y] = 2;
 			
 			for(int gene = 0; gene < pop.getIndividual(indiv).size(); gene++)
 			{
@@ -172,7 +176,7 @@ public class Driver2 extends JPanel implements KeyListener
 					}
 					else //Empty space
 					{
-						grid[pos.x][pos.y] = 2;
+						grid[startPos.x][startPos.y] = 2;
 						pop.getIndividual(indiv).spaces++;
 					}
 				}
@@ -187,9 +191,15 @@ public class Driver2 extends JPanel implements KeyListener
 	{
 		//Displays information about the current population
 		System.out.println("Population " + popNum + " complete, max fitness: " + pop.getIndividual(pop.getFittest()).getFitness());
-		System.out.println(pop.getIndividual(pop.getFittest()));
+		System.out.println(pop.getIndividual(pop.getFittest()).toString());
 		System.out.println();
-		showFittest(pop.getIndividual(pop.getFittest()).genes);
+		
+		String path = curBestPath;
+		for(int x = 0; x < pop.getIndividual(pop.getFittest()).size(); x++)
+		{
+			path += pop.getIndividual(pop.getFittest()).genes[x];
+		}
+		showFittest(path);
 		
 		//Evolves next population
 		Population newPop = Algorithims.evolve(pop);
@@ -215,7 +225,6 @@ public class Driver2 extends JPanel implements KeyListener
 		{
 			for(int y = 0; y < 32; y++)
 			{
-				System.out.print(grid[x][y]);
 				switch(grid[x][y])
 				{
 					case 0:
@@ -231,7 +240,6 @@ public class Driver2 extends JPanel implements KeyListener
 						g.drawImage(path, x*32, y*32, 32, 32, null);
 				}
 			}
-			System.out.println();
 		}
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
 	}
@@ -288,7 +296,7 @@ public class Driver2 extends JPanel implements KeyListener
 	{
 		
 	}
-
+	
 	public void keyTyped(KeyEvent arg0)
 	{
 		
@@ -317,10 +325,36 @@ public class Driver2 extends JPanel implements KeyListener
 	}
 	
 	/**
+	 * Changes where the ant starts on the grid
+	 */
+	private static void updateStartPos()
+	{
+		startPos.setLocation(0, 0);
+		for(int x = 0; x < curBestPath.length(); x++)
+		{
+			switch(Integer.parseInt(curBestPath.charAt(x) + ""))
+			{
+				case 0:
+					startPos.setLocation(startPos.getX(), startPos.getY() - 1);
+					break;
+				case 1:
+					startPos.setLocation(startPos.getX() - 1, startPos.getY());
+					break;
+				case 2:
+					startPos.setLocation(startPos.getX(), startPos.getY() + 1);
+					break;
+				case 3:
+					startPos.setLocation(startPos.getX() + 1, startPos.getY());
+					break;
+			}
+		}
+	}
+	
+	/**
 	 * Displays the current best path
 	 * @param genes Current best path of instructions
 	 */
-	private static void showFittest(int[] genes)
+	private static void showFittest(String genes)
 	{
 		for(int x = 0; x < grid.length; x++)
 		{
@@ -329,11 +363,11 @@ public class Driver2 extends JPanel implements KeyListener
 				grid[x][y] = gridInput[x][y];
 			}
 		}
-		pos.setLocation(0, 0);
+		pos.setLocation(startPos.x, startPos.y);
 		numFruitLeft = totalFruit;
-		grid[0][0] = 2;
+		grid[startPos.x][startPos.y] = 2;
 		
-		for(int gene = 0; gene < genes.length; gene++)
+		for(int gene = 0; gene < genes.length(); gene++)
 		{
 			panel.repaint();
 			try {
@@ -341,7 +375,7 @@ public class Driver2 extends JPanel implements KeyListener
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			switch(genes[gene])
+			switch(Integer.parseInt(genes.charAt(gene) + ""))
 			{
 				case 0:
 					pos.setLocation(pos.getX(), pos.getY() - 1);
