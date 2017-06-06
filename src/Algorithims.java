@@ -1,8 +1,21 @@
+import java.util.HashSet;
+import java.util.Set;
+
 public class Algorithims
 {
+	/**
+	 * Chance a gene will be mutated
+	 */
 	public static double mutationRate = .1;
+	/**
+	 * Number of individuals selected to go through tournament algorithm
+	 */
 	public static final int TOURNAMENT_SIZE = 5;
 	
+	/**
+	 * @param pop population to evolve
+	 * @return New evolved population
+	 */
 	public static Population evolve(Population pop)
 	{
 		Population newPop = new Population(pop.size(), false);
@@ -21,9 +34,14 @@ public class Algorithims
 		return newPop;
 	}
 	
+	/**
+	 * @param individual1 first individual to crossover
+	 * @param individual2 second individual to crossover
+	 * @return an individual which is a combination of individual1 and individual2
+	 */
 	public static Individual crossover(Individual individual1, Individual individual2)
 	{
-		Individual newIndividual = new Individual();
+		Individual newIndividual = new Individual(Individual.geneLength);
 		
 		for(int x = 0; x < individual1.size(); x++)
 		{
@@ -39,6 +57,9 @@ public class Algorithims
 		return newIndividual;
 	}
 	
+	/**
+	 * @param individual to be mutated
+	 */
 	public static void mutate(Individual individual)
 	{
 		for(int x = 0; x < individual.size(); x++)
@@ -55,17 +76,28 @@ public class Algorithims
 		mutationRate = .1;
 	}
 	
+	/**
+	 * Selects random individuals and returns one with best fitness
+	 * Uses set to prevent duplication
+	 * @param pop population to select individuals from
+	 * @return Most fit individual from a small sample
+	 */
 	public static Individual tournamentSelection(Population pop)
 	{
-		Population tournament = new Population(TOURNAMENT_SIZE, false);
+		Set<Integer> indexes = new HashSet<Integer>();
+		Population population = new Population(TOURNAMENT_SIZE, false);
 		
-		for(int x = 0; x < tournament.size(); x++)
+		int random;
+		while(indexes.size() < TOURNAMENT_SIZE)
 		{
-			int id = (int) (Math.random() * pop.size());
-			tournament.saveIndividual(x, pop.getIndividual(id));
+			random = (int)(Math.random() * pop.size());
+			if(indexes.add(random))
+			{
+				population.saveIndividual(indexes.size() - 1, pop.getIndividual(random));
+			}
 		}
 		
-		return tournament.getIndividual(tournament.getFittest());
+		return population.getIndividual(population.getFittest());
 	}
 
 }

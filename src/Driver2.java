@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Driver extends JPanel implements KeyListener
+public class Driver2 extends JPanel implements KeyListener
 {
 	private static final long serialVersionUID = 1L;
 	private BufferedImage path = null;
@@ -46,6 +46,14 @@ public class Driver extends JPanel implements KeyListener
 	 * 2 = completed path<br>
 	 */
 	private static int[][] grid = new int[32][32];
+	/**
+	 * Keeps track of current max fitness
+	 */
+	private static double currentMaxFitness = 0;
+	/**
+	 * Number of times fitness has been repeated
+	 */
+	private static double fitnessCount = 0;
 	
 	public static void main(String[] args) 
 	{
@@ -59,7 +67,7 @@ public class Driver extends JPanel implements KeyListener
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		
-		Individual.setGeneLength(200);
+		Individual.setGeneLength(10);
 		pop = new Population(100, true);
 		double fitness = calcFitness();
 		readGrid();
@@ -68,12 +76,25 @@ public class Driver extends JPanel implements KeyListener
 		while(numFruitLeft != 0 || fitness < 89)
 		{
 			fitness = calcFitness();
+			if(fitness == currentMaxFitness)
+			{
+				fitnessCount++;
+			} else if(fitness > currentMaxFitness)
+			{
+				currentMaxFitness = fitness;
+				fitnessCount = 0;
+			}
+			if(fitnessCount == 1000 && Individual.geneLength < 200)
+			{
+				Individual.setGeneLength(Individual.geneLength + 10);
+			}
+				
 			System.out.println("Achieved a fitness of " + fitness);
 		}
 		frame.dispose();
 	}
 	
-	public Driver()
+	public Driver2()
 	{
 		addKeyListener(this);
 		this.setPreferredSize(new Dimension(1014, 1014));
@@ -194,6 +215,7 @@ public class Driver extends JPanel implements KeyListener
 		{
 			for(int y = 0; y < 32; y++)
 			{
+				System.out.print(grid[x][y]);
 				switch(grid[x][y])
 				{
 					case 0:
@@ -209,6 +231,7 @@ public class Driver extends JPanel implements KeyListener
 						g.drawImage(path, x*32, y*32, 32, 32, null);
 				}
 			}
+			System.out.println();
 		}
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
 	}
@@ -239,6 +262,7 @@ public class Driver extends JPanel implements KeyListener
 			}
 			numFruitLeft = totalFruit;
 			scan.close();
+			panel.repaint();
 		} catch (FileNotFoundException e)
 		{
 			System.out.println(e);

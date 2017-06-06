@@ -1,6 +1,6 @@
 public class Individual
 {
-	public static final int geneLength = 200;
+	public static int geneLength;
 	/**
 	 * 0 = up<br>
 	 * 1 = left<br>
@@ -11,20 +11,27 @@ public class Individual
 	public double fitness = 0;
 	public int apples, spaces;
 	
-	public Individual()
+	public Individual(int geneLength)
 	{
+		setGeneLength(geneLength);
 		apples = 0;
 		spaces = 1;
 	}
 	
+	/**
+	 * Creates random genes
+	 */
 	public void generate()
 	{
-		for(int x = 0; x < geneLength; x++)
+		for(int x = geneLength - 10; x < geneLength; x++)
 		{
 			genes[x] = (int) (Math.random() * 4);
 		}
 	}
 	
+	/**
+	 * @return The fitness of the individual
+	 */
 	public double getFitness()
 	{
 		if(fitness == 0 && spaces != 0)
@@ -34,21 +41,40 @@ public class Individual
 		return fitness;
 	}
 	
+	/**
+	 * @param index of gene
+	 * @return gene at index
+	 */
     public int getGene(int index)
     {
         return genes[index];
     }
     
-    public void setGene(int index, int gene)
+    /**
+     * @param index of replaced gene
+     * @param newGene new gene value
+     */
+    public void setGene(int index, int newGene)
     {
-    	genes[index] = gene;
+    	genes[index] = newGene;
     }
     
+    public static void setGeneLength(int newLength)
+    {
+    	geneLength = newLength;
+    }
+    
+    /**
+     * @return Number of genes
+     */
     public int size()
     {
     	return geneLength;
     }
     
+    /**
+     * @return String of genes
+     */
     public String toString()
     {
     	String result = "";
