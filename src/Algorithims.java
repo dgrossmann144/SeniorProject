@@ -20,8 +20,9 @@ public class Algorithims
 	{
 		Population newPop = new Population(pop.size(), false);
 
+		pop.getIndividual(pop.getFittest()).resetAll();
 		newPop.saveIndividual(0, pop.getIndividual(pop.getFittest()));
-
+		
 		for (int i = 1; i < pop.size(); i++)
 		{
 			Individual individual1 = tournamentSelection(pop);

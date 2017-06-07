@@ -22,6 +22,7 @@ public class Driver2 extends JPanel implements KeyListener
 	private BufferedImage yoshi = null;
 	private static Point pos = new Point(0, 0);
 	private static Point startPos = new Point(0, 0);
+	private static Point currentStartPos = new Point(0, 0);
 	/**
 	 * Stores the initial board for resetting
 	 */
@@ -56,6 +57,7 @@ public class Driver2 extends JPanel implements KeyListener
 	 */
 	private static double fitnessCount = 0;
 	private static String curBestPath = "";
+	private static final int MAX_GENE_LENGTH = 200;
 	
 	public static void main(String[] args) 
 	{
@@ -68,32 +70,35 @@ public class Driver2 extends JPanel implements KeyListener
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		panel.readImages();
 		
-		Individual.setGeneLength(10);
+		Individual.setGeneLength(20);
 		pop = new Population(100, true);
-		double fitness = calcFitness();
+		double fitness = 0;
 		readGrid();
 		
 		//Main loop 
 		while(numFruitLeft != 0 || fitness < .37)
 		{
+			System.out.println(fitnessCount);
 			fitness = calcFitness();
-			if(fitness == currentMaxFitness)
-			{
-				fitnessCount++;
-			} else if(fitness > currentMaxFitness)
+			if(fitness > currentMaxFitness)
 			{
 				currentMaxFitness = fitness;
 				fitnessCount = 0;
-			}
-			if(fitnessCount == 1000 && Individual.geneLength < 200)
+			} else
 			{
-				curBestPath += pop.getIndividual(pop.getFittest()).toString();
+				fitnessCount++;
+			}
+			if(fitnessCount >= 1000 && Individual.geneLength < MAX_GENE_LENGTH)
+			{
+				curBestPath += pop.getIndividual(pop.getFittest()).getGenes();
 				pop = new Population(pop.size(), true);
 				updateStartPos();
+				System.out.println("StartPos after update: " + startPos);
 				fitnessCount = 0;
 			}
-			System.out.println("Achieved a fitness of " + fitness);
+//			System.out.println("Achieved a fitness of " + fitness);
 		}
 		frame.dispose();
 	}
@@ -121,14 +126,18 @@ public class Driver2 extends JPanel implements KeyListener
 				}
 			}
 			pos.setLocation(startPos.x, startPos.y);
+			if(!startPos.equals(currentStartPos))
+			{
+				System.out.println("Start position changed");
+			}
 			
 			//Checks first space for fruit
 			if (grid[pos.x][pos.y] == 1)
 			{
 				numFruitLeft--;
-				pop.getIndividual(indiv).apples++;
+				pop.getIndividual(indiv).addApple(pos);
 			}
-			grid[startPos.x][startPos.y] = 2;
+			grid[pos.x][pos.y] = 2;
 			
 			for(int gene = 0; gene < pop.getIndividual(indiv).size(); gene++)
 			{
@@ -152,7 +161,7 @@ public class Driver2 extends JPanel implements KeyListener
 				if(bound())
 				{
 					//Stops current individual
-					pop.getIndividual(indiv).spaces = pop.getIndividual(indiv).size();
+					pop.getIndividual(indiv).spaces = MAX_GENE_LENGTH;
 					continue indivLoop;
 				} else
 				{
@@ -160,12 +169,12 @@ public class Driver2 extends JPanel implements KeyListener
 					if (grid[pos.x][pos.y] == 1)
 					{
 						numFruitLeft--;
-						pop.getIndividual(indiv).apples++;
+						pop.getIndividual(indiv).addApple(pos);
 					}
 					//Stops if it retraces path
 					if(grid[pos.x][pos.y] == 2)
 					{
-						pop.getIndividual(indiv).spaces = pop.getIndividual(indiv).size();
+						pop.getIndividual(indiv).spaces = MAX_GENE_LENGTH;
 						continue indivLoop;
 					}
 					//Stops if all fruit are collected
@@ -176,12 +185,13 @@ public class Driver2 extends JPanel implements KeyListener
 					}
 					else //Empty space
 					{
-						grid[startPos.x][startPos.y] = 2;
+						grid[pos.x][pos.y] = 2;
 						pop.getIndividual(indiv).spaces++;
 					}
 				}
 			}
 		}
+	
 		double fitness = pop.getIndividual(pop.getFittest()).getFitness();
 		reset();
 		return fitness;
@@ -191,15 +201,10 @@ public class Driver2 extends JPanel implements KeyListener
 	{
 		//Displays information about the current population
 		System.out.println("Population " + popNum + " complete, max fitness: " + pop.getIndividual(pop.getFittest()).getFitness());
-		System.out.println(pop.getIndividual(pop.getFittest()).toString());
+		System.out.println(pop.getIndividual(pop.getFittest()));
 		System.out.println();
-		
-		String path = curBestPath;
-		for(int x = 0; x < pop.getIndividual(pop.getFittest()).size(); x++)
-		{
-			path += pop.getIndividual(pop.getFittest()).genes[x];
-		}
-		showFittest(path);
+
+		showFittest(pop.getIndividual(pop.getFittest()).getGenes());
 		
 		//Evolves next population
 		Population newPop = Algorithims.evolve(pop);
@@ -207,9 +212,8 @@ public class Driver2 extends JPanel implements KeyListener
 		popNum++;
 	}
 	
-	protected void paintComponent(Graphics g)
+	private void readImages()
 	{
-		super.paintComponent(g);
 		try
 		{
 			path = ImageIO.read(new File("assets/Path.png"));
@@ -219,6 +223,11 @@ public class Driver2 extends JPanel implements KeyListener
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
 		
 		//Prints grid
 		for(int x = 0; x < 32; x++)
@@ -240,6 +249,10 @@ public class Driver2 extends JPanel implements KeyListener
 						g.drawImage(path, x*32, y*32, 32, 32, null);
 				}
 			}
+		}
+		if(pos.x == 0 && pos.y == 0 && curBestPath.length() > 0)
+		{
+			System.out.println("Position error");
 		}
 		g.drawImage(yoshi, (int)pos.getX() * 32, (int)pos.getY() * 32, 32, 32, null);
 	}
@@ -332,6 +345,7 @@ public class Driver2 extends JPanel implements KeyListener
 		startPos.setLocation(0, 0);
 		for(int x = 0; x < curBestPath.length(); x++)
 		{
+			gridInput[startPos.x][startPos.y] = 2;
 			switch(Integer.parseInt(curBestPath.charAt(x) + ""))
 			{
 				case 0:
@@ -348,6 +362,7 @@ public class Driver2 extends JPanel implements KeyListener
 					break;
 			}
 		}
+		currentStartPos.setLocation(startPos);
 	}
 	
 	/**
@@ -363,9 +378,9 @@ public class Driver2 extends JPanel implements KeyListener
 				grid[x][y] = gridInput[x][y];
 			}
 		}
-		pos.setLocation(startPos.x, startPos.y);
+		pos.setLocation(startPos);
 		numFruitLeft = totalFruit;
-		grid[startPos.x][startPos.y] = 2;
+		grid[pos.x][pos.y] = 2;
 		
 		for(int gene = 0; gene < genes.length(); gene++)
 		{

@@ -101,7 +101,7 @@ public class Driver extends JPanel implements KeyListener
 			if (grid[pos.x][pos.y] == 1)
 			{
 				numFruitLeft--;
-				pop.getIndividual(indiv).apples++;
+				pop.getIndividual(indiv).addApple(pos);
 			}
 			grid[pos.x][pos.y] = 2;
 			
@@ -135,7 +135,7 @@ public class Driver extends JPanel implements KeyListener
 					if (grid[pos.x][pos.y] == 1)
 					{
 						numFruitLeft--;
-						pop.getIndividual(indiv).apples++;
+						pop.getIndividual(indiv).addApple(pos);;
 					}
 					//Stops if it retraces path
 					if(grid[pos.x][pos.y] == 2)

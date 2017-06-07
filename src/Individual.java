@@ -1,3 +1,8 @@
+import java.awt.Point;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
+
 public class Individual
 {
 	public static int geneLength;
@@ -9,7 +14,10 @@ public class Individual
 	 */
 	public int[] genes = new int[geneLength];
 	public double fitness = 0;
-	public int apples, spaces;
+	private int apples;
+	public int spaces;
+	private static Random random = new Random(100);
+	private HashSet<Point> appleLocations = new HashSet<Point>();
 	
 	public Individual(int geneLength)
 	{
@@ -23,9 +31,10 @@ public class Individual
 	 */
 	public void generate()
 	{
-		for(int x = geneLength - 10; x < geneLength; x++)
+		
+		for(int x = 0; x < geneLength; x++)
 		{
-			genes[x] = (int) (Math.random() * 4);
+			genes[x] = (int) random.nextInt(4);
 		}
 	}
 	
@@ -61,7 +70,7 @@ public class Individual
     
     public static void setGeneLength(int newLength)
     {
-    	geneLength = newLength;
+   		geneLength = newLength;
     }
     
     /**
@@ -71,18 +80,39 @@ public class Individual
     {
     	return geneLength;
     }
+
+	@Override
+	public String toString() {
+		return "Individual [genes=" + Arrays.toString(genes) + ", apples=" + apples + ", spaces=" + spaces + "]";
+	}
+
+	public void addApple(Point pos)
+	{
+		apples++;
+		if(!appleLocations.add(new Point(pos)))
+		{
+			System.out.println("Found error in apples");
+		}
+	}
+	
+	public void resetAll()
+	{
+		apples = 0;
+		spaces = 1;
+		appleLocations.clear();
+	}
     
     /**
      * @return String of genes
      */
-    public String toString()
+    public String getGenes()
     {
     	String result = "";
     	for(int x = 0; x < genes.length; x++)
     	{
     		result += genes[x];
     	}
-    
+    	
     	return result;
     }
 }
