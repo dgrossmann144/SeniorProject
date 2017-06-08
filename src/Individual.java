@@ -115,4 +115,11 @@ public class Individual
     	
     	return result;
     }
+
+	public int getApples()
+	{
+		return apples;
+	}
+    
+    
 }

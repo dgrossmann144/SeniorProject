@@ -32,6 +32,7 @@ public class Driver2 extends JPanel implements KeyListener
 	 */
 	private static Driver2 panel;
 	private static int speed = 1;
+	private static int collectedCount = 0;
 	private static int numFruitLeft;
 	private static int totalFruit = 0;
 	/**
@@ -58,8 +59,9 @@ public class Driver2 extends JPanel implements KeyListener
 	private static double fitnessCount = 0;
 	private static String curBestPath = "";
 	private static final int MAX_GENE_LENGTH = 200;
+	private static int applesInFittest = 0;
 	
-	public static void main(String[] args) 
+	public static void main(String[] args) throws InterruptedException 
 	{
 		//Initializes window for drawing to
 		JFrame frame = new JFrame ("Santa Fe Ant Problem");
@@ -78,9 +80,8 @@ public class Driver2 extends JPanel implements KeyListener
 		readGrid();
 		
 		//Main loop 
-		while(numFruitLeft != 0 || fitness < .37)
+		while(collectedCount < totalFruit)
 		{
-			System.out.println(fitnessCount);
 			fitness = calcFitness();
 			if(fitness > currentMaxFitness)
 			{
@@ -92,15 +93,14 @@ public class Driver2 extends JPanel implements KeyListener
 			}
 			if(fitnessCount >= 1000 && Individual.geneLength < MAX_GENE_LENGTH)
 			{
+				collectedCount += applesInFittest;
 				curBestPath += pop.getIndividual(pop.getFittest()).getGenes();
 				pop = new Population(pop.size(), true);
 				updateStartPos();
-				System.out.println("StartPos after update: " + startPos);
 				fitnessCount = 0;
 			}
-//			System.out.println("Achieved a fitness of " + fitness);
 		}
-		frame.dispose();
+		System.out.println("Done :)");
 	}
 	
 	public Driver2()
@@ -126,10 +126,6 @@ public class Driver2 extends JPanel implements KeyListener
 				}
 			}
 			pos.setLocation(startPos.x, startPos.y);
-			if(!startPos.equals(currentStartPos))
-			{
-				System.out.println("Start position changed");
-			}
 			
 			//Checks first space for fruit
 			if (grid[pos.x][pos.y] == 1)
@@ -158,7 +154,7 @@ public class Driver2 extends JPanel implements KeyListener
 						break;
 				}
 				
-				if(bound())
+				if(bound(pos))
 				{
 					//Stops current individual
 					pop.getIndividual(indiv).spaces = MAX_GENE_LENGTH;
@@ -172,11 +168,11 @@ public class Driver2 extends JPanel implements KeyListener
 						pop.getIndividual(indiv).addApple(pos);
 					}
 					//Stops if it retraces path
-					if(grid[pos.x][pos.y] == 2)
-					{
-						pop.getIndividual(indiv).spaces = MAX_GENE_LENGTH;
-						continue indivLoop;
-					}
+//					if(grid[pos.x][pos.y] == 2)
+//					{
+//						pop.getIndividual(indiv).spaces = MAX_GENE_LENGTH;
+//						continue indivLoop;
+//					}
 					//Stops if all fruit are collected
 					if(numFruitLeft == 0)
 					{
@@ -199,12 +195,8 @@ public class Driver2 extends JPanel implements KeyListener
 	
 	private static void reset()
 	{
-		//Displays information about the current population
-		System.out.println("Population " + popNum + " complete, max fitness: " + pop.getIndividual(pop.getFittest()).getFitness());
-		System.out.println(pop.getIndividual(pop.getFittest()));
-		System.out.println();
-
 		showFittest(pop.getIndividual(pop.getFittest()).getGenes());
+		applesInFittest = pop.getIndividual(pop.getFittest()).getApples();
 		
 		//Evolves next population
 		Population newPop = Algorithims.evolve(pop);
@@ -318,19 +310,19 @@ public class Driver2 extends JPanel implements KeyListener
 	/**
 	 * @return Whether the position is in the grid
 	 */
-	private static boolean bound()
+	private static boolean bound(Point p)
 	{
-		if(pos.getX() < 0)
+		if(p.getX() < 0)
 		{
 			return true;
-		} else if(pos.getX() > 31)
+		} else if(p.getX() > 31)
 		{
 			return true;
 		}
-		if(pos.getY() < 0)
+		if(p.getY() < 0)
 		{
 			return true;
-		} else if(pos.getY() > 31)
+		} else if(p.getY() > 31)
 		{
 			return true;
 		}
@@ -361,6 +353,7 @@ public class Driver2 extends JPanel implements KeyListener
 					startPos.setLocation(startPos.getX() + 1, startPos.getY());
 					break;
 			}
+			setToEdge(startPos);
 		}
 		currentStartPos.setLocation(startPos);
 	}
@@ -405,14 +398,14 @@ public class Driver2 extends JPanel implements KeyListener
 					pos.setLocation(pos.getX() + 1, pos.getY());
 					break;
 			}
-			if(bound())
+			if(bound(pos))
 			{
 				break;
 			}
-			if(grid[pos.x][pos.y] == 2)
-			{
-				break;
-			}
+//			if(grid[pos.x][pos.y] == 2)
+//			{
+//				break;
+//			}
 			if (grid[pos.x][pos.y] == 1)
 			{
 				numFruitLeft--;
@@ -422,6 +415,24 @@ public class Driver2 extends JPanel implements KeyListener
 				break;
 			}
 			grid[pos.x][pos.y] = 2;
+		}
+	}
+	
+	private static void setToEdge(Point p)
+	{
+		if(p.getX() < 0)
+		{
+			p.setLocation(0, p.y);
+		} else if(p.getX() > 31)
+		{
+			p.setLocation(31, p.y);
+		}
+		if(p.getY() < 0)
+		{
+			p.setLocation(p.x, 0);
+		} else if(p.getY() > 31)
+		{
+			p.setLocation(p.x, 31);
 		}
 	}
 }
